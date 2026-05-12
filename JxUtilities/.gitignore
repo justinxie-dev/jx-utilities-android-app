@@ -9,7 +9,6 @@ captures/
 cmake-build-debug/
 
 # --- Build Output ---
-# This is the most important one!
 build/
 app/build/
 
