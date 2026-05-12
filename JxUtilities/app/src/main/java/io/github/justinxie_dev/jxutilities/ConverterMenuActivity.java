@@ -878,10 +878,6 @@ public class ConverterMenuActivity extends AppCompatActivity {
                     }
                 }
             }
-
-
-
-
         }
 
         if (COUNTER == 3) {

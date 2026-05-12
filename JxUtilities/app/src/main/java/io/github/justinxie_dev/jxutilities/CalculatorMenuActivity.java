@@ -198,33 +198,6 @@ public class CalculatorMenuActivity extends AppCompatActivity {
             toast.show();
             calcOutputMenu.setText("Incorrect");
         }
-
-
-
-
-        /***String input = calcMenuInputText.getText().toString();
-        String[] inputDelimited = input.split("=");
-
-        String sbString = sb.toString();
-        sbString = sbString.replace("÷", "/");
-        DoubleEvaluator doubleEval = new DoubleEvaluator();
-        Double result = doubleEval.evaluate(sbString);
-        calcOutputMenu.setText(result.toString());
-        String output = calcOutputMenu.getText().toString(); ***/
-
-        /***if(!inputDelimited[1].equals(output)) {
-            Context context = getApplicationContext();
-            CharSequence text = "Sorry, that is not correct! Please try again!";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-        } else {
-            Context context = getApplicationContext();
-            CharSequence text = "That is correct! Good job!";
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-        }***/
     }
 
     public void calcGiveMeAnswerButtonClick(View view) {

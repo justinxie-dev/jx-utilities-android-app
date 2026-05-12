@@ -126,9 +126,5 @@ public class MapsMenuActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
-
-
-
-
     }
 }
