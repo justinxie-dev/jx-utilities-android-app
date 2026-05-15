@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "calculations")
-public class CalculatorDbRow {
+@Entity(tableName = "calculator")
+public class CalculatorDataEntity {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
