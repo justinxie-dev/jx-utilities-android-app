@@ -12,9 +12,9 @@ public class MapsDataEntity {
 
     @ColumnInfo(name = "latitude")
     // Stores latitude value
-    public String latitude;
+    public double latitude;
 
     @ColumnInfo(name = "longitude")
     // Stores longitude value
-    public String longitude;
+    public double longitude;
 }
