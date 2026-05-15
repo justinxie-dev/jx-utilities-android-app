@@ -14,7 +14,7 @@ public interface ConverterDao {
 
     // Retrieve past entries in descending order
     @Query("SELECT * FROM converter ORDER BY id DESC")
-    List<CalculatorDataEntity> getAllRows();
+    List<ConverterDataEntity> getAllRows();
 
     // Delete all entries/rows
     @Query("DELETE FROM converter")

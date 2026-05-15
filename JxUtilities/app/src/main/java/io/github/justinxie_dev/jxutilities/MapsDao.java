@@ -14,7 +14,7 @@ public interface MapsDao {
 
     // Retrieve past entries in descending order
     @Query("SELECT * FROM maps ORDER BY id DESC")
-    List<CalculatorDataEntity> getAllRows();
+    List<MapsDataEntity> getAllRows();
 
     // Delete all entries/rows
     @Query("DELETE FROM maps")
