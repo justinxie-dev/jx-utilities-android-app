@@ -8,7 +8,7 @@ import java.util.List;
 @Dao
 public interface CalculatorDao {
 
-    // Add new row entry to calculations table
+    // Add new row entry to table
     @Insert
     void insertRow(CalculatorDataEntity calculatorDbRow);
 
