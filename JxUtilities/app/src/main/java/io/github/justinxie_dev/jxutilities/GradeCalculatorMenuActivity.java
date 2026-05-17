@@ -2,6 +2,7 @@ package io.github.justinxie_dev.jxutilities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -61,6 +62,7 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grade_calculator_menu);
 
@@ -115,6 +117,11 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#006400"));
         actionBar.setBackgroundDrawable(colorDrawable);
+
+        // Create an instance of the database
+        // Reference: https://developer.android.com/training/data-storage/room (Usage section)
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        GradeCalculatorDao gradeCalculatorDao = db.gradeCalculatorDao();
     }
 
     public void gradeCalcCheckYourAnswerButtonClick(View view) {

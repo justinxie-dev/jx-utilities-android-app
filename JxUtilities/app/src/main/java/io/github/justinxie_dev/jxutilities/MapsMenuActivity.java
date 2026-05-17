@@ -2,6 +2,7 @@ package io.github.justinxie_dev.jxutilities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ public class MapsMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_menu);
 
@@ -61,6 +63,11 @@ public class MapsMenuActivity extends AppCompatActivity {
         longDisplayTextEditText.setFocusable(false);
 
         // Globe image source link: https://www.photowall.com/us/globe-poster
+
+        // Create an instance of the database
+        // Reference: https://developer.android.com/training/data-storage/room (Usage section)
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        MapsDao mapsDao = db.mapsDao();
     }
 
     public void pickForMeButtonClick(View view) {
