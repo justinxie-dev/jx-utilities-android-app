@@ -47,7 +47,6 @@ public class CalculatorMenuActivity extends AppCompatActivity {
     // Database declarations
     private AppDatabase db;
     private CalculatorDao calculatorDao;
-    private CalculatorDataEntity calculatorDbRow = new CalculatorDataEntity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +188,8 @@ public class CalculatorMenuActivity extends AppCompatActivity {
 
     public void calcCheckYourAnswerButtonClick(View view) {
         String sbString = sb.toString();
-        calculatorDbRow.expression = sbString;
         String[] sbStringDelimited;
+        String correctOrIncorrect;
 
         sbStringDelimited = sbString.split("=");
         sbStringDelimited[0] = sbStringDelimited[0].replace("÷", "/");
@@ -205,38 +204,54 @@ public class CalculatorMenuActivity extends AppCompatActivity {
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            calcOutputMenu.setText("Correct");
-            calculatorDbRow.result = "Correct";
+            correctOrIncorrect = "Correct";
+            calcOutputMenu.setText(correctOrIncorrect);
         } else {
             Context context = getApplicationContext();
             CharSequence text = "Please try again!";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            calcOutputMenu.setText("Incorrect");
-            calculatorDbRow.result = "Incorrect";
+            correctOrIncorrect = "Incorrect";
+            calcOutputMenu.setText(correctOrIncorrect);
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            CalculatorDataEntity calculatorDbRow = new CalculatorDataEntity();
+            calculatorDbRow.result = correctOrIncorrect;
+            calculatorDbRow.expression = sbString;
+            calculatorDao.insertRow(calculatorDbRow);
+        });
     }
 
     public void calcGiveMeAnswerButtonClick(View view) {
         String sbString = sb.toString();
-        calculatorDbRow.expression = sbString;
         String[] sbStringDelimited;
+        Double result;
+        String finalSbString = sbString;
 
         if(sbString.contains("=")) {
             sbStringDelimited = sbString.split("=");
             sbStringDelimited[0] = sbStringDelimited[0].replace("÷", "/");
             DoubleEvaluator doubleEvalDelimited = new DoubleEvaluator();
-            Double resultDelimited = doubleEvalDelimited.evaluate(sbStringDelimited[0]);
-            calcOutputMenu.setText(resultDelimited.toString());
-            calculatorDbRow.result = resultDelimited.toString();
+            result = doubleEvalDelimited.evaluate(sbStringDelimited[0]);
+            calcOutputMenu.setText(result.toString());
+
         } else {
             sbString = sbString.replace("÷", "/");
             DoubleEvaluator doubleEval = new DoubleEvaluator();
-            Double result = doubleEval.evaluate(sbString);
+            result = doubleEval.evaluate(sbString);
             calcOutputMenu.setText(result.toString());
-            calculatorDbRow.result = result.toString();
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            CalculatorDataEntity calculatorDbRow = new CalculatorDataEntity();
+            calculatorDbRow.result = result.toString();
+            calculatorDbRow.expression = finalSbString;
+            calculatorDao.insertRow(calculatorDbRow);
+        });
     }
 
     // Establish History button and link the Activity to the Activty History screen
