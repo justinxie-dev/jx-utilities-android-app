@@ -1,8 +1,11 @@
 package io.github.justinxie_dev.jxutilities;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,6 +24,10 @@ public class ConverterHistory extends AppCompatActivity {
             return insets;
         });
 
-
+        // Set Action Bar color
+        // Source: https://www.geeksforgeeks.org/how-to-change-the-color-of-action-bar-in-an-android-app/
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#E6CC00"));
+        actionBar.setBackgroundDrawable(colorDrawable);
     }
 }

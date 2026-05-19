@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +45,11 @@ public class ConverterMenuActivity extends AppCompatActivity {
 
     private Button convCheckYourAnsButton;
     private Button convGiveMeAnsButton;
+
+    // Database declarations
+    private AppDatabase db;
+    private ConverterDao converterDao;
+    private ConverterDataEntity converterDataEntity = new ConverterDataEntity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +95,8 @@ public class ConverterMenuActivity extends AppCompatActivity {
 
         // Create an instance of the database
         // Reference: https://developer.android.com/training/data-storage/room (Usage section)
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
-        ConverterDao converterDao = db.converterDao();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        converterDao = db.converterDao();
     }
 
     public void temperatureButtonClick(View view) {
@@ -1167,5 +1175,24 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    // Establish History button and link the Activity to the Activty History screen
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // This line links top_menu.xml file to this activity's top/action bar
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check if the item clicked matches the ID from top_menu.xml
+        if (item.getItemId() == R.id.action_history) {
+            Intent intent = new Intent(this, ConverterHistory.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

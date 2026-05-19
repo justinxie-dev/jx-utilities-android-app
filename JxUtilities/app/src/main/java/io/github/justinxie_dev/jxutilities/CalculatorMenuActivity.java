@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -40,6 +43,11 @@ public class CalculatorMenuActivity extends AppCompatActivity {
     private TextView calcOutputMenu;
 
     private StringBuilder sb = new StringBuilder();
+
+    // Database declarations
+    private AppDatabase db;
+    private CalculatorDao calculatorDao;
+    private CalculatorDataEntity calculatorDbRow = new CalculatorDataEntity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +102,8 @@ public class CalculatorMenuActivity extends AppCompatActivity {
 
         // Create an instance of the database
         // Reference: https://developer.android.com/training/data-storage/room (Usage section)
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
-        CalculatorDao calculatorDao = db.calculatorDao();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        calculatorDao = db.calculatorDao();
     }
 
     public void addOperatorButtonClick(View view) {
@@ -181,6 +189,7 @@ public class CalculatorMenuActivity extends AppCompatActivity {
 
     public void calcCheckYourAnswerButtonClick(View view) {
         String sbString = sb.toString();
+        calculatorDbRow.expression = sbString;
         String[] sbStringDelimited;
 
         sbStringDelimited = sbString.split("=");
@@ -197,6 +206,7 @@ public class CalculatorMenuActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             calcOutputMenu.setText("Correct");
+            calculatorDbRow.result = "Correct";
         } else {
             Context context = getApplicationContext();
             CharSequence text = "Please try again!";
@@ -204,11 +214,13 @@ public class CalculatorMenuActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             calcOutputMenu.setText("Incorrect");
+            calculatorDbRow.result = "Incorrect";
         }
     }
 
     public void calcGiveMeAnswerButtonClick(View view) {
         String sbString = sb.toString();
+        calculatorDbRow.expression = sbString;
         String[] sbStringDelimited;
 
         if(sbString.contains("=")) {
@@ -217,11 +229,32 @@ public class CalculatorMenuActivity extends AppCompatActivity {
             DoubleEvaluator doubleEvalDelimited = new DoubleEvaluator();
             Double resultDelimited = doubleEvalDelimited.evaluate(sbStringDelimited[0]);
             calcOutputMenu.setText(resultDelimited.toString());
+            calculatorDbRow.result = resultDelimited.toString();
         } else {
             sbString = sbString.replace("÷", "/");
             DoubleEvaluator doubleEval = new DoubleEvaluator();
             Double result = doubleEval.evaluate(sbString);
             calcOutputMenu.setText(result.toString());
+            calculatorDbRow.result = result.toString();
         }
+    }
+
+    // Establish History button and link the Activity to the Activty History screen
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // This line links top_menu.xml file to this activity's top/action bar
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check if the item clicked matches the ID from top_menu.xml
+        if (item.getItemId() == R.id.action_history) {
+            Intent intent = new Intent(this, CalculatorHistory.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
