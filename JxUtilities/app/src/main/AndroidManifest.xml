@@ -12,7 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JxUtilities"
         tools:targetApi="31">
-
+        <activity
+            android:name=".GradeCalculatorHistory"
+            android:exported="false" />
+        <activity
+            android:name=".MapsHistory"
+            android:exported="false" />
+        <activity
+            android:name=".ConverterHistory"
+            android:exported="false" />
+        <activity
+            android:name=".CalculatorHistory"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
