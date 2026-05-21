@@ -34,6 +34,10 @@ public class MapsMenuActivity extends AppCompatActivity {
     static double latitude;
     static double longitude;
 
+    // Database declarations
+    private AppDatabase db;
+    private MapsDao mapsDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,8 +72,8 @@ public class MapsMenuActivity extends AppCompatActivity {
 
         // Create an instance of the database
         // Reference: https://developer.android.com/training/data-storage/room (Usage section)
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
-        MapsDao mapsDao = db.mapsDao();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        mapsDao = db.mapsDao();
     }
 
     public void pickForMeButtonClick(View view) {
@@ -135,6 +139,14 @@ public class MapsMenuActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            MapsDataEntity mapsDbRow = new MapsDataEntity();
+            mapsDbRow.latitude = latitude;
+            mapsDbRow.longitude = longitude;
+            mapsDao.insertRow(mapsDbRow);
+        });
     }
 
     // Establish History button and link the Activity to the Activty History screen
