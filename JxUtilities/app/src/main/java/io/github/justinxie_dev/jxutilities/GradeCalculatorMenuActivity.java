@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class GradeCalculatorMenuActivity extends AppCompatActivity {
 
@@ -33,6 +34,7 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
     private EditText assignmentDescInput9;
     private EditText assignmentDescInput10;
 
+    // Before Double.parse
     private EditText grdInput1;
     private EditText grdInput2;
     private EditText grdInput3;
@@ -44,6 +46,19 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
     private EditText grdInput9;
     private EditText grdInput10;
 
+    // After Double.parse
+    private Double grade1;
+    private Double grade2;
+    private Double grade3;
+    private Double grade4;
+    private Double grade5;
+    private Double grade6;
+    private Double grade7;
+    private Double grade8;
+    private Double grade9;
+    private Double grade10;
+
+    // Before Double.parse
     private EditText weiInput1;
     private EditText weiInput2;
     private EditText weiInput3;
@@ -55,6 +70,18 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
     private EditText weiInput9;
     private EditText weiInput10;
 
+    // After Double.parse
+    private Double weight1;
+    private Double weight2;
+    private Double weight3;
+    private Double weight4;
+    private Double weight5;
+    private Double weight6;
+    private Double weight7;
+    private Double weight8;
+    private Double weight9;
+    private Double weight10;
+
     private Button gradeCalcCheckYourAnsButton;
     private Button gradeCalcGiveMeAnsButton;
 
@@ -62,6 +89,10 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
     private EditText displayGradeLeEditText;
 
     private TextView weiHeading;
+
+    // Database declarations
+    private AppDatabase db;
+    private GradeCalculatorDao gradeCalculatorDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,81 +154,83 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
 
         // Create an instance of the database
         // Reference: https://developer.android.com/training/data-storage/room (Usage section)
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
-        GradeCalculatorDao gradeCalculatorDao = db.gradeCalculatorDao();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        gradeCalculatorDao = db.gradeCalculatorDao();
     }
 
     public void gradeCalcCheckYourAnswerButtonClick(View view) {
         Double grade = 0.0;
-        Double sumOfWeights = 0.0;
         String trueGrade = null;
+        String inputGrade = null;
+        String letterGrade = null;
+        Double sumOfWeights = 0.0;
 
         if (!grdInput1.getText().toString().isEmpty() && !weiInput1.getText().toString().isEmpty()) {
-            Double grade1 = Double.parseDouble(grdInput1.getText().toString());
-            Double weight1 = Double.parseDouble(weiInput1.getText().toString());
+            grade1 = Double.parseDouble(grdInput1.getText().toString());
+            weight1 = Double.parseDouble(weiInput1.getText().toString());
             grade += grade1 * (weight1 / 100.0);
             sumOfWeights += weight1;
         }
 
         if (!grdInput2.getText().toString().isEmpty() && !weiInput2.getText().toString().isEmpty()) {
-            Double grade2 = Double.parseDouble(grdInput2.getText().toString());
-            Double weight2 = Double.parseDouble(weiInput2.getText().toString());
+            grade2 = Double.parseDouble(grdInput2.getText().toString());
+            weight2 = Double.parseDouble(weiInput2.getText().toString());
             grade += grade2 * (weight2 / 100.0);
             sumOfWeights += weight2;
         }
 
         if (!grdInput3.getText().toString().isEmpty() && !weiInput3.getText().toString().isEmpty()) {
-            Double grade3 = Double.parseDouble(grdInput3.getText().toString());
-            Double weight3 = Double.parseDouble(weiInput3.getText().toString());
+            grade3 = Double.parseDouble(grdInput3.getText().toString());
+            weight3 = Double.parseDouble(weiInput3.getText().toString());
             grade += grade3 * (weight3 / 100.0);
             sumOfWeights += weight3;
         }
 
         if (!grdInput4.getText().toString().isEmpty() && !weiInput4.getText().toString().isEmpty()) {
-            Double grade4 = Double.parseDouble(grdInput4.getText().toString());
-            Double weight4 = Double.parseDouble(weiInput4.getText().toString());
+            grade4 = Double.parseDouble(grdInput4.getText().toString());
+            weight4 = Double.parseDouble(weiInput4.getText().toString());
             grade += grade4 * (weight4 / 100.0);
             sumOfWeights += weight4;
         }
 
         if (!grdInput5.getText().toString().isEmpty() && !weiInput5.getText().toString().isEmpty()) {
-            Double grade5 = Double.parseDouble(grdInput5.getText().toString());
-            Double weight5 = Double.parseDouble(weiInput5.getText().toString());
+            grade5 = Double.parseDouble(grdInput5.getText().toString());
+            weight5 = Double.parseDouble(weiInput5.getText().toString());
             grade += grade5 * (weight5 / 100.0);
             sumOfWeights += weight5;
         }
 
         if (!grdInput6.getText().toString().isEmpty() && !weiInput6.getText().toString().isEmpty()) {
-            Double grade6 = Double.parseDouble(grdInput6.getText().toString());
-            Double weight6 = Double.parseDouble(weiInput6.getText().toString());
+            grade6 = Double.parseDouble(grdInput6.getText().toString());
+            weight6 = Double.parseDouble(weiInput6.getText().toString());
             grade += grade6 * (weight6 / 100.0);
             sumOfWeights += weight6;
         }
 
         if (!grdInput7.getText().toString().isEmpty() && !weiInput7.getText().toString().isEmpty()) {
-            Double grade7 = Double.parseDouble(grdInput7.getText().toString());
-            Double weight7 = Double.parseDouble(weiInput7.getText().toString());
+            grade7 = Double.parseDouble(grdInput7.getText().toString());
+            weight7 = Double.parseDouble(weiInput7.getText().toString());
             grade += grade7 * (weight7 / 100.0);
             sumOfWeights += weight7;
         }
 
         if (!grdInput8.getText().toString().isEmpty() && !weiInput8.getText().toString().isEmpty()) {
-            Double grade8 = Double.parseDouble(grdInput8.getText().toString());
-            Double weight8 = Double.parseDouble(weiInput8.getText().toString());
+            grade8 = Double.parseDouble(grdInput8.getText().toString());
+            weight8 = Double.parseDouble(weiInput8.getText().toString());
             grade += grade8 * (weight8 / 100.0);
             sumOfWeights += weight8;
         }
 
         if (!grdInput9.getText().toString().isEmpty() && !weiInput9.getText().toString().isEmpty()) {
-            Double grade9 = Double.parseDouble(grdInput9.getText().toString());
-            Double weight9 = Double.parseDouble(weiInput9.getText().toString());
+            grade9 = Double.parseDouble(grdInput9.getText().toString());
+            weight9 = Double.parseDouble(weiInput9.getText().toString());
             grade += grade9 * (weight9 / 100.0);
             sumOfWeights += weight9;
         }
 
         if (!grdInput10.getText().toString().isEmpty() && !weiInput10.getText().toString().isEmpty()) {
-            Double grade10 = Double.parseDouble(grdInput10.getText().toString());
-            Double weight10 = Double.parseDouble(weiInput10.getText().toString());
+            grade10 = Double.parseDouble(grdInput10.getText().toString());
+            weight10 = Double.parseDouble(weiInput10.getText().toString());
             grade += grade10 * (weight10 / 100.0);
             sumOfWeights += weight10;
         }
@@ -222,7 +255,7 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
         } else if (displayGradeLeEditText.getText().toString().equals("A") || displayGradeLeEditText.getText().toString().equals("B")
                 || displayGradeLeEditText.getText().toString().equals("C") || displayGradeLeEditText.getText().toString().equals("D")
                 || displayGradeLeEditText.getText().toString().equals("F")) {
-            String inputGrade = displayGradeLeEditText.getText().toString();
+            inputGrade = displayGradeLeEditText.getText().toString();
             if (inputGrade.equals(trueGrade)) {
                 // Decimal to two places source: https://stackoverflow.com/questions/7747469/how-can-i-truncate-a-double-to-only-two-decimal-places-in-java
                 String gradeDecimalFormat = new DecimalFormat("#.##").format(grade);
@@ -275,78 +308,139 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
+
+        // Variables inside lambda expression needs to be effectively final
+        Double finalGrade = grade;
+
+        if(Objects.equals(inputGrade, trueGrade)) {
+            letterGrade = inputGrade + " - Correct! You guessed right!";
+        } else {
+            letterGrade = inputGrade + " - Incorrect! You guessed wrong...";
+        }
+        String finalLetterGrade = letterGrade;
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            GradeCalculatorDataEntity gradeCalculatorDbRow = new GradeCalculatorDataEntity();
+
+            gradeCalculatorDbRow.assignmentDesc1 = assignmentDescInput1.getText().toString();
+            gradeCalculatorDbRow.grade1 = grade1;
+            gradeCalculatorDbRow.weight1 = weight1;
+
+            gradeCalculatorDbRow.assignmentDesc2 = assignmentDescInput2.getText().toString();
+            gradeCalculatorDbRow.grade2 = grade2;
+            gradeCalculatorDbRow.weight2 = weight2;
+
+            gradeCalculatorDbRow.assignmentDesc3 = assignmentDescInput3.getText().toString();
+            gradeCalculatorDbRow.grade3 = grade3;
+            gradeCalculatorDbRow.weight3 = weight3;
+
+            gradeCalculatorDbRow.assignmentDesc4 = assignmentDescInput4.getText().toString();
+            gradeCalculatorDbRow.grade4 = grade4;
+            gradeCalculatorDbRow.weight4 = weight4;
+
+            gradeCalculatorDbRow.assignmentDesc5 = assignmentDescInput5.getText().toString();
+            gradeCalculatorDbRow.grade5 = grade5;
+            gradeCalculatorDbRow.weight5 = weight5;
+
+            gradeCalculatorDbRow.assignmentDesc6 = assignmentDescInput6.getText().toString();
+            gradeCalculatorDbRow.grade6 = grade6;
+            gradeCalculatorDbRow.weight6 = weight6;
+
+            gradeCalculatorDbRow.assignmentDesc7 = assignmentDescInput7.getText().toString();
+            gradeCalculatorDbRow.grade7 = grade7;
+            gradeCalculatorDbRow.weight7 = weight7;
+
+            gradeCalculatorDbRow.assignmentDesc8 = assignmentDescInput8.getText().toString();
+            gradeCalculatorDbRow.grade8 = grade8;
+            gradeCalculatorDbRow.weight8 = weight8;
+
+            gradeCalculatorDbRow.assignmentDesc9 = assignmentDescInput9.getText().toString();
+            gradeCalculatorDbRow.grade9 = grade9;
+            gradeCalculatorDbRow.weight9 = weight9;
+
+            gradeCalculatorDbRow.assignmentDesc10 = assignmentDescInput10.getText().toString();
+            gradeCalculatorDbRow.grade10 = grade10;
+            gradeCalculatorDbRow.weight10 = weight10;
+
+            gradeCalculatorDbRow.finalGrade = finalGrade;
+            gradeCalculatorDbRow.finalLetterGrade = finalLetterGrade;
+
+            gradeCalculatorDao.insertRow(gradeCalculatorDbRow);
+        });
     }
 
     public void gradeCalcGiveMeAnswerButtonClick(View view) {
         Double grade = 0.0;
+        String letterGrade = null;
         Double sumOfWeights = 0.0;
 
         if (!grdInput1.getText().toString().isEmpty() && !weiInput1.getText().toString().isEmpty()) {
-            Double grade1 = Double.parseDouble(grdInput1.getText().toString());
-            Double weight1 = Double.parseDouble(weiInput1.getText().toString());
+            grade1 = Double.parseDouble(grdInput1.getText().toString());
+            weight1 = Double.parseDouble(weiInput1.getText().toString());
             grade += grade1 * (weight1 / 100.0);
             sumOfWeights += weight1;
         }
 
         if (!grdInput2.getText().toString().isEmpty() && !weiInput2.getText().toString().isEmpty()) {
-            Double grade2 = Double.parseDouble(grdInput2.getText().toString());
-            Double weight2 = Double.parseDouble(weiInput2.getText().toString());
+            grade2 = Double.parseDouble(grdInput2.getText().toString());
+            weight2 = Double.parseDouble(weiInput2.getText().toString());
             grade += grade2 * (weight2 / 100.0);
             sumOfWeights += weight2;
         }
 
         if (!grdInput3.getText().toString().isEmpty() && !weiInput3.getText().toString().isEmpty()) {
-            Double grade3 = Double.parseDouble(grdInput3.getText().toString());
-            Double weight3 = Double.parseDouble(weiInput3.getText().toString());
+            grade3 = Double.parseDouble(grdInput3.getText().toString());
+            weight3 = Double.parseDouble(weiInput3.getText().toString());
             grade += grade3 * (weight3 / 100.0);
             sumOfWeights += weight3;
         }
 
         if (!grdInput4.getText().toString().isEmpty() && !weiInput4.getText().toString().isEmpty()) {
-            Double grade4 = Double.parseDouble(grdInput4.getText().toString());
-            Double weight4 = Double.parseDouble(weiInput4.getText().toString());
+            grade4 = Double.parseDouble(grdInput4.getText().toString());
+            weight4 = Double.parseDouble(weiInput4.getText().toString());
             grade += grade4 * (weight4 / 100.0);
             sumOfWeights += weight4;
         }
 
         if (!grdInput5.getText().toString().isEmpty() && !weiInput5.getText().toString().isEmpty()) {
-            Double grade5 = Double.parseDouble(grdInput5.getText().toString());
-            Double weight5 = Double.parseDouble(weiInput5.getText().toString());
+            grade5 = Double.parseDouble(grdInput5.getText().toString());
+            weight5 = Double.parseDouble(weiInput5.getText().toString());
             grade += grade5 * (weight5 / 100.0);
             sumOfWeights += weight5;
         }
 
         if (!grdInput6.getText().toString().isEmpty() && !weiInput6.getText().toString().isEmpty()) {
-            Double grade6 = Double.parseDouble(grdInput6.getText().toString());
-            Double weight6 = Double.parseDouble(weiInput6.getText().toString());
+            grade6 = Double.parseDouble(grdInput6.getText().toString());
+            weight6 = Double.parseDouble(weiInput6.getText().toString());
             grade += grade6 * (weight6 / 100.0);
             sumOfWeights += weight6;
         }
 
         if (!grdInput7.getText().toString().isEmpty() && !weiInput7.getText().toString().isEmpty()) {
-            Double grade7 = Double.parseDouble(grdInput7.getText().toString());
-            Double weight7 = Double.parseDouble(weiInput7.getText().toString());
+            grade7 = Double.parseDouble(grdInput7.getText().toString());
+            weight7 = Double.parseDouble(weiInput7.getText().toString());
             grade += grade7 * (weight7 / 100.0);
             sumOfWeights += weight7;
         }
 
         if (!grdInput8.getText().toString().isEmpty() && !weiInput8.getText().toString().isEmpty()) {
-            Double grade8 = Double.parseDouble(grdInput8.getText().toString());
-            Double weight8 = Double.parseDouble(weiInput8.getText().toString());
+            grade8 = Double.parseDouble(grdInput8.getText().toString());
+            weight8 = Double.parseDouble(weiInput8.getText().toString());
             grade += grade8 * (weight8 / 100.0);
             sumOfWeights += weight8;
         }
 
         if (!grdInput9.getText().toString().isEmpty() && !weiInput9.getText().toString().isEmpty()) {
-            Double grade9 = Double.parseDouble(grdInput9.getText().toString());
-            Double weight9 = Double.parseDouble(weiInput9.getText().toString());
+            grade9 = Double.parseDouble(grdInput9.getText().toString());
+            weight9 = Double.parseDouble(weiInput9.getText().toString());
             grade += grade9 * (weight9 / 100.0);
             sumOfWeights += weight9;
         }
 
         if (!grdInput10.getText().toString().isEmpty() && !weiInput10.getText().toString().isEmpty()) {
-            Double grade10 = Double.parseDouble(grdInput10.getText().toString());
-            Double weight10 = Double.parseDouble(weiInput10.getText().toString());
+            grade10 = Double.parseDouble(grdInput10.getText().toString());
+            weight10 = Double.parseDouble(weiInput10.getText().toString());
             grade += grade10 * (weight10 / 100.0);
             sumOfWeights += weight10;
         }
@@ -357,23 +451,28 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
 
         // Setting text colors programmatically source: https://stackoverflow.com/questions/8472349/how-to-set-text-color-of-a-textview-programmatically
         if (grade >= 90.0) {
-            displayGradeLeEditText.setText("A");
+            letterGrade = "A";
+            displayGradeLeEditText.setText(letterGrade);
             displayGradeLeEditText.setTextColor(Color.parseColor("#228B22"));
             displayGradeNoTextView.setTextColor(Color.parseColor("#228B22"));
         } else if (grade >= 80.0) {
-            displayGradeLeEditText.setText("B");
+            letterGrade = "B";
+            displayGradeLeEditText.setText(letterGrade);
             displayGradeLeEditText.setTextColor(Color.parseColor("#1870d5"));
             displayGradeNoTextView.setTextColor(Color.parseColor("#1870d5"));
         } else if (grade >= 70.0) {
-            displayGradeLeEditText.setText("C");
+            letterGrade = "C";
+            displayGradeLeEditText.setText(letterGrade);
             displayGradeLeEditText.setTextColor(Color.parseColor("#e6b400"));
             displayGradeNoTextView.setTextColor(Color.parseColor("#e6b400"));
         } else if (grade >= 60.0) {
-            displayGradeLeEditText.setText("D");
+            letterGrade = "D";
+            displayGradeLeEditText.setText(letterGrade);
             displayGradeLeEditText.setTextColor(Color.parseColor("#e47200"));
             displayGradeNoTextView.setTextColor(Color.parseColor("#e47200"));
         } else if (grade < 60.0) {
-            displayGradeLeEditText.setText("F");
+            letterGrade = "F";
+            displayGradeLeEditText.setText(letterGrade);
             displayGradeLeEditText.setTextColor(Color.parseColor("#FF0000"));
             displayGradeNoTextView.setTextColor(Color.parseColor("#FF0000"));
         }
@@ -388,6 +487,60 @@ public class GradeCalculatorMenuActivity extends AppCompatActivity {
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
+
+        // Variables inside lambda expression needs to be effectively final
+        Double finalGrade = grade;
+        String finalLetterGrade = letterGrade;
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            GradeCalculatorDataEntity gradeCalculatorDbRow = new GradeCalculatorDataEntity();
+
+            gradeCalculatorDbRow.assignmentDesc1 = assignmentDescInput1.getText().toString();
+            gradeCalculatorDbRow.grade1 = grade1;
+            gradeCalculatorDbRow.weight1 = weight1;
+
+            gradeCalculatorDbRow.assignmentDesc2 = assignmentDescInput2.getText().toString();
+            gradeCalculatorDbRow.grade2 = grade2;
+            gradeCalculatorDbRow.weight2 = weight2;
+
+            gradeCalculatorDbRow.assignmentDesc3 = assignmentDescInput3.getText().toString();
+            gradeCalculatorDbRow.grade3 = grade3;
+            gradeCalculatorDbRow.weight3 = weight3;
+
+            gradeCalculatorDbRow.assignmentDesc4 = assignmentDescInput4.getText().toString();
+            gradeCalculatorDbRow.grade4 = grade4;
+            gradeCalculatorDbRow.weight4 = weight4;
+
+            gradeCalculatorDbRow.assignmentDesc5 = assignmentDescInput5.getText().toString();
+            gradeCalculatorDbRow.grade5 = grade5;
+            gradeCalculatorDbRow.weight5 = weight5;
+
+            gradeCalculatorDbRow.assignmentDesc6 = assignmentDescInput6.getText().toString();
+            gradeCalculatorDbRow.grade6 = grade6;
+            gradeCalculatorDbRow.weight6 = weight6;
+
+            gradeCalculatorDbRow.assignmentDesc7 = assignmentDescInput7.getText().toString();
+            gradeCalculatorDbRow.grade7 = grade7;
+            gradeCalculatorDbRow.weight7 = weight7;
+
+            gradeCalculatorDbRow.assignmentDesc8 = assignmentDescInput8.getText().toString();
+            gradeCalculatorDbRow.grade8 = grade8;
+            gradeCalculatorDbRow.weight8 = weight8;
+
+            gradeCalculatorDbRow.assignmentDesc9 = assignmentDescInput9.getText().toString();
+            gradeCalculatorDbRow.grade9 = grade9;
+            gradeCalculatorDbRow.weight9 = weight9;
+
+            gradeCalculatorDbRow.assignmentDesc10 = assignmentDescInput10.getText().toString();
+            gradeCalculatorDbRow.grade10 = grade10;
+            gradeCalculatorDbRow.weight10 = weight10;
+
+            gradeCalculatorDbRow.finalGrade = finalGrade;
+            gradeCalculatorDbRow.finalLetterGrade = finalLetterGrade;
+
+            gradeCalculatorDao.insertRow(gradeCalculatorDbRow);
+        });
     }
 
     // Establish History button and link the Activity to the Activty History screen
