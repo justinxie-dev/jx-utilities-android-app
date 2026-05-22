@@ -2,11 +2,15 @@ package io.github.justinxie_dev.jxutilities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -40,8 +44,13 @@ public class CalculatorMenuActivity extends AppCompatActivity {
 
     private StringBuilder sb = new StringBuilder();
 
+    // Database declarations
+    private AppDatabase db;
+    private CalculatorDao calculatorDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator_menu);
 
@@ -89,6 +98,11 @@ public class CalculatorMenuActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#800000"));
         actionBar.setBackgroundDrawable(colorDrawable);
+
+        // Create an instance of the database
+        // Reference: https://developer.android.com/training/data-storage/room (Usage section)
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        calculatorDao = db.calculatorDao();
     }
 
     public void addOperatorButtonClick(View view) {
@@ -175,6 +189,7 @@ public class CalculatorMenuActivity extends AppCompatActivity {
     public void calcCheckYourAnswerButtonClick(View view) {
         String sbString = sb.toString();
         String[] sbStringDelimited;
+        String correctOrIncorrect;
 
         sbStringDelimited = sbString.split("=");
         sbStringDelimited[0] = sbStringDelimited[0].replace("÷", "/");
@@ -189,32 +204,72 @@ public class CalculatorMenuActivity extends AppCompatActivity {
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            calcOutputMenu.setText("Correct");
+            correctOrIncorrect = "Correct";
+            calcOutputMenu.setText(correctOrIncorrect);
         } else {
             Context context = getApplicationContext();
             CharSequence text = "Please try again!";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            calcOutputMenu.setText("Incorrect");
+            correctOrIncorrect = "Incorrect";
+            calcOutputMenu.setText(correctOrIncorrect);
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            CalculatorDataEntity calculatorDbRow = new CalculatorDataEntity();
+            calculatorDbRow.result = correctOrIncorrect;
+            calculatorDbRow.expression = sbString;
+            calculatorDao.insertRow(calculatorDbRow);
+        });
     }
 
     public void calcGiveMeAnswerButtonClick(View view) {
         String sbString = sb.toString();
         String[] sbStringDelimited;
+        Double result;
+        String finalSbString = sbString;
 
         if(sbString.contains("=")) {
             sbStringDelimited = sbString.split("=");
             sbStringDelimited[0] = sbStringDelimited[0].replace("÷", "/");
             DoubleEvaluator doubleEvalDelimited = new DoubleEvaluator();
-            Double resultDelimited = doubleEvalDelimited.evaluate(sbStringDelimited[0]);
-            calcOutputMenu.setText(resultDelimited.toString());
+            result = doubleEvalDelimited.evaluate(sbStringDelimited[0]);
+            calcOutputMenu.setText(result.toString());
+
         } else {
             sbString = sbString.replace("÷", "/");
             DoubleEvaluator doubleEval = new DoubleEvaluator();
-            Double result = doubleEval.evaluate(sbString);
+            result = doubleEval.evaluate(sbString);
             calcOutputMenu.setText(result.toString());
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            CalculatorDataEntity calculatorDbRow = new CalculatorDataEntity();
+            calculatorDbRow.result = result.toString();
+            calculatorDbRow.expression = finalSbString;
+            calculatorDao.insertRow(calculatorDbRow);
+        });
+    }
+
+    // Establish History button and link the Activity to the Activty History screen
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // This line links top_menu.xml file to this activity's top/action bar
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check if the item clicked matches the ID from top_menu.xml
+        if (item.getItemId() == R.id.action_history) {
+            Intent intent = new Intent(this, CalculatorHistory.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

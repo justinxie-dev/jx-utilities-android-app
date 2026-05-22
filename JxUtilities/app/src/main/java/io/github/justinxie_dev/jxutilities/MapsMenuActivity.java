@@ -2,12 +2,15 @@ package io.github.justinxie_dev.jxutilities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,8 +34,13 @@ public class MapsMenuActivity extends AppCompatActivity {
     static double latitude;
     static double longitude;
 
+    // Database declarations
+    private AppDatabase db;
+    private MapsDao mapsDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_menu);
 
@@ -61,6 +69,11 @@ public class MapsMenuActivity extends AppCompatActivity {
         longDisplayTextEditText.setFocusable(false);
 
         // Globe image source link: https://www.photowall.com/us/globe-poster
+
+        // Create an instance of the database
+        // Reference: https://developer.android.com/training/data-storage/room (Usage section)
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        mapsDao = db.mapsDao();
     }
 
     public void pickForMeButtonClick(View view) {
@@ -126,5 +139,32 @@ public class MapsMenuActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            MapsDataEntity mapsDbRow = new MapsDataEntity();
+            mapsDbRow.latitude = latitude;
+            mapsDbRow.longitude = longitude;
+            mapsDao.insertRow(mapsDbRow);
+        });
+    }
+
+    // Establish History button and link the Activity to the Activty History screen
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // This line links top_menu.xml file to this activity's top/action bar
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check if the item clicked matches the ID from top_menu.xml
+        if (item.getItemId() == R.id.action_history) {
+            Intent intent = new Intent(this, MapsHistory.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

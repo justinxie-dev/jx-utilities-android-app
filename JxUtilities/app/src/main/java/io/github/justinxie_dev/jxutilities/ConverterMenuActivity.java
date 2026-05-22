@@ -2,11 +2,15 @@ package io.github.justinxie_dev.jxutilities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,8 +46,22 @@ public class ConverterMenuActivity extends AppCompatActivity {
     private Button convCheckYourAnsButton;
     private Button convGiveMeAnsButton;
 
+    private Double doubleInput;
+    private Double doubleOutput;
+    private String unitType = null;
+    private String fromUnit = null;
+    private String toUnit = null;
+
+    // Used to determine radio button text
+    String s = null;
+
+    // Database declarations
+    private AppDatabase db;
+    private ConverterDao converterDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter_menu);
 
@@ -82,10 +100,16 @@ public class ConverterMenuActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#E6CC00"));
         actionBar.setBackgroundDrawable(colorDrawable);
+
+        // Create an instance of the database
+        // Reference: https://developer.android.com/training/data-storage/room (Usage section)
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
+        converterDao = db.converterDao();
     }
 
     public void temperatureButtonClick(View view) {
         COUNTER = 1;
+        unitType = "TEMP";
 
         fromOp1.setText("Fahrenheit (°F)");
         fromOp2.setText("Celsius (°C)");
@@ -105,6 +129,7 @@ public class ConverterMenuActivity extends AppCompatActivity {
 
     public void lengthButtonClick(View view) {
         COUNTER = 2;
+        unitType = "LENGTH";
 
         fromOp1.setText("inch (in)");
         fromOp2.setText("foot (ft)");
@@ -124,6 +149,7 @@ public class ConverterMenuActivity extends AppCompatActivity {
 
     public void massButtonClick(View view) {
         COUNTER = 3;
+        unitType = "MASS";
 
         fromOp1.setText("pound (lb)");
         fromOp2.setText("ounce (oz)");
@@ -144,31 +170,37 @@ public class ConverterMenuActivity extends AppCompatActivity {
     public void fromOption1RadioButtonClick(View view) {
         String s = fromOp1.getText().toString();
         fromSecTextView.setText(s);
+        fromUnit = s;
     }
 
     public void fromOption2RadioButtonClick(View view) {
         String s = fromOp2.getText().toString();
         fromSecTextView.setText(s);
+        fromUnit = s;
     }
 
     public void fromOption3RadioButtonClick(View view) {
         String s = fromOp3.getText().toString();
         fromSecTextView.setText(s);
+        fromUnit = s;
     }
 
     public void toOption1RadioButtonClick(View view) {
         String s = toOp1.getText().toString();
         toSecTextView.setText(s);
+        toUnit = s;
     }
 
     public void toOption2RadioButtonClick(View view) {
         String s = toOp2.getText().toString();
         toSecTextView.setText(s);
+        toUnit = s;
     }
 
     public void toOption3RadioButtonClick(View view) {
         String s = toOp3.getText().toString();
         toSecTextView.setText(s);
+        toUnit = s;
     }
 
     public void convGiveMeAnswerButtonClick(View view) {
@@ -177,8 +209,8 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 fromSecEditText.setError("Please provide a number.");
             } else {
                 String stringInput = fromSecEditText.getText().toString();
-                Double doubleInput = Double.parseDouble(stringInput);
-                Double doubleOutput = 0.0;
+                doubleInput = Double.parseDouble(stringInput);
+                doubleOutput = 0.0;
 
                 if(fromOp1.isChecked() && toOp1.isChecked()) {
                     doubleOutput = doubleInput;
@@ -225,8 +257,8 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 fromSecEditText.setError("Please provide a number.");
             } else {
                 String stringInput = fromSecEditText.getText().toString();
-                Double doubleInput = Double.parseDouble(stringInput);
-                Double doubleOutput = 0.0;
+                doubleInput = Double.parseDouble(stringInput);
+                doubleOutput = 0.0;
 
                 if(fromOp1.isChecked() && toOp1.isChecked()) {
                     doubleOutput = doubleInput;
@@ -273,8 +305,8 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 fromSecEditText.setError("Please provide a number.");
             } else {
                 String stringInput = fromSecEditText.getText().toString();
-                Double doubleInput = Double.parseDouble(stringInput);
-                Double doubleOutput = 0.0;
+                doubleInput = Double.parseDouble(stringInput);
+                doubleOutput = 0.0;
 
                 if(fromOp1.isChecked() && toOp1.isChecked()) {
                     doubleOutput = doubleInput;
@@ -315,9 +347,25 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 toSecEditText.setText(doubleOutput.toString());
             }
         }
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            ConverterDataEntity converterDbRow = new ConverterDataEntity();
+            converterDbRow.unitType = unitType;
+            converterDbRow.fromUnit = fromUnit;
+            converterDbRow.toUnit = toUnit;
+            converterDbRow.fromValue = doubleInput;
+            converterDbRow.toValue = doubleOutput;
+            converterDao.insertRow(converterDbRow);
+        });
     }
 
     public void convCheckYourAnswerButtonClick(View view) {
+        String stringInput = null;
+        String stringAnswer = null;
+        Double doubleAnswer = null;
+        String toUnitAppendCorrectIncorrect = null;
+
         if (COUNTER == 1) {
             if(fromOp1.isChecked() && toOp1.isChecked()) {
                 if(fromSecEditText.getText().toString().isEmpty()) {
@@ -325,12 +373,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -356,12 +404,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = (doubleInput - 32) * 5/9;
 
@@ -387,12 +435,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = (doubleInput - 32) * 5/9 + 273.15;
 
@@ -418,12 +466,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = (doubleInput * 9/5) + 32;
 
@@ -449,12 +497,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -480,12 +528,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput + 273.15;
 
@@ -511,12 +559,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = (doubleInput - 273.15) * 9/5 + 32;
 
@@ -542,12 +590,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput - 273.15;
 
@@ -573,12 +621,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -606,12 +654,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -637,12 +685,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput/12;
 
@@ -668,12 +716,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput/36;
 
@@ -699,12 +747,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput * 12;
 
@@ -730,12 +778,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -761,12 +809,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput / 3;
 
@@ -792,12 +840,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput * 36;
 
@@ -823,12 +871,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput * 3;
 
@@ -854,12 +902,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -887,12 +935,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -918,12 +966,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput * 16;
 
@@ -949,12 +997,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput / 2000;
 
@@ -980,12 +1028,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput / 16;
 
@@ -1011,12 +1059,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -1042,12 +1090,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput / 32000;
 
@@ -1073,12 +1121,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput * 2000;
 
@@ -1104,12 +1152,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput * 32000;
 
@@ -1135,12 +1183,12 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 } else if (toSecEditText.getText().toString().isEmpty()) {
                     toSecEditText.setError("Please provide your answer.");
                 } else {
-                    String stringInput = fromSecEditText.getText().toString();
-                    Double doubleInput = Double.parseDouble(stringInput);
-                    Double doubleOutput = 0.0;
+                    stringInput = fromSecEditText.getText().toString();
+                    doubleInput = Double.parseDouble(stringInput);
+                    doubleOutput = 0.0;
 
-                    String stringAnswer = toSecEditText.getText().toString();
-                    Double doubleAnswer = Double.parseDouble(stringAnswer);
+                    stringAnswer = toSecEditText.getText().toString();
+                    doubleAnswer = Double.parseDouble(stringAnswer);
 
                     doubleOutput = doubleInput;
 
@@ -1160,5 +1208,44 @@ public class ConverterMenuActivity extends AppCompatActivity {
                 }
             }
         }
+
+        if((Math.abs(doubleAnswer) >= (Math.abs(doubleOutput) * (1 - 0.15))) && (Math.abs(doubleAnswer) <= (Math.abs(doubleOutput) * (1 + 0.15)))) {
+            toUnitAppendCorrectIncorrect = toUnit + " --> Correct";
+        } else{
+            toUnitAppendCorrectIncorrect = toUnit + " --> Incorrect";
+        }
+        String finalToUnitAppendCorrectIncorrect = toUnitAppendCorrectIncorrect;
+
+        Double finalDoubleAnswer = doubleAnswer;
+
+        // Store entry/row into database on a separate thread away from UI thread to prevent crashing
+        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+            ConverterDataEntity converterDbRow = new ConverterDataEntity();
+            converterDbRow.unitType = unitType;
+            converterDbRow.fromUnit = fromUnit;
+            converterDbRow.toUnit = finalToUnitAppendCorrectIncorrect;
+            converterDbRow.fromValue = doubleInput;
+            converterDbRow.toValue = finalDoubleAnswer;
+            converterDao.insertRow(converterDbRow);
+        });
+    }
+
+    // Establish History button and link the Activity to the Activty History screen
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // This line links top_menu.xml file to this activity's top/action bar
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Check if the item clicked matches the ID from top_menu.xml
+        if (item.getItemId() == R.id.action_history) {
+            Intent intent = new Intent(this, ConverterHistory.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
