@@ -44,7 +44,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="16dp"
-            app:icon="@android:drawable/ic_delete"
+            app:icon="@drawable/calc_button_icon"
             app:iconTint="#BB86FC" />
 
         <Button
@@ -61,7 +61,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="16dp"
-            app:icon="@android:drawable/ic_delete"
+            app:icon="@drawable/converter_button_icon"
             app:iconTint="@color/purple_200" />
 
         <Button
@@ -78,7 +78,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="16dp"
-            app:icon="@android:drawable/ic_delete"
+            app:icon="@drawable/maps_button_icon"
             app:iconTint="#BB86FC" />
 
         <Button
@@ -95,7 +95,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="16dp"
-            app:icon="@android:drawable/ic_delete"
+            app:icon="@drawable/grade_calc_button_icon"
             app:iconTint="#BB86FC" />
 
     </LinearLayout>
