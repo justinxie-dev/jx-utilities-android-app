@@ -33,11 +33,6 @@ public class MainActivity extends AppCompatActivity {
         mButton = (Button) findViewById(R.id.mapButton);
         gradesButton = (Button) findViewById(R.id.gradeCalculatorButton);
 
-        calcButton.setBackgroundColor(Color.RED);
-        convButton.setBackgroundColor(Color.YELLOW);
-        mButton.setBackgroundColor(Color.BLUE);
-        gradesButton.setBackgroundColor(Color.GREEN);
-
         // Preparing the music switch
         musSwitch = (Switch) findViewById(R.id.musicSwitch);
         musSwitch.setChecked(false);
