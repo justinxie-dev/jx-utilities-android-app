@@ -37,7 +37,7 @@
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#2C2C2E"
+            android:backgroundTint="#673AB7"
             android:onClick="calculatorButtonClick"
             android:text="Calculator"
             android:textColor="#E0E0E0"
@@ -45,41 +45,58 @@
             android:textStyle="bold"
             app:cornerRadius="16dp"
             app:icon="@android:drawable/ic_delete"
-            app:iconGravity="textStart"
             app:iconTint="#BB86FC" />
 
         <Button
             android:id="@+id/convertersButton"
-            android:layout_width="196dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#673AB7"
             android:onClick="converterButtonClick"
             android:text="Converter"
-            android:textColor="@color/black"
+            android:textColor="#E0E0E0"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:icon="@android:drawable/ic_delete"
+            app:iconTint="@color/purple_200" />
 
         <Button
             android:id="@+id/mapButton"
-            android:layout_width="144dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#673AB7"
             android:onClick="mapsButtonClick"
             android:text="Maps"
-            android:textColor="@color/white"
+            android:textColor="#E0E0E0"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:icon="@android:drawable/ic_delete"
+            app:iconTint="#BB86FC" />
 
         <Button
             android:id="@+id/gradeCalculatorButton"
-            android:layout_width="92dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#673AB7"
             android:onClick="gradeCalculatorButtonClick"
             android:text="Grades"
-            android:textColor="@color/black"
+            android:textColor="#E0E0E0"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:icon="@android:drawable/ic_delete"
+            app:iconTint="#BB86FC" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
