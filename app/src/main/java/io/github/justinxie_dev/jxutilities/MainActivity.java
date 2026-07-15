@@ -14,21 +14,10 @@ import android.widget.Switch;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button calcButton;
-    private Button convButton;
-    private Button mButton;
-    private Button gradesButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Set background color for the Main Menu buttons
-        calcButton = (Button) findViewById(R.id.calculatorButton);
-        convButton = (Button) findViewById(R.id.convertersButton);
-        mButton = (Button) findViewById(R.id.mapButton);
-        gradesButton = (Button) findViewById(R.id.gradeCalculatorButton);
 
         // Set Action Bar color
         // Source: https://www.geeksforgeeks.org/how-to-change-the-color-of-action-bar-in-an-android-app/
