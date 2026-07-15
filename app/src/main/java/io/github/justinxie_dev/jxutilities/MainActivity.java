@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mButton;
     private Button gradesButton;
 
-    private MediaPlayer music;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     // This code block is for music. Uncomment if music should be played
     /*
+    private MediaPlayer music;
+
     // Preparing the music switch
     private Switch musSwitch;
     musSwitch = (Switch) findViewById(R.id.musicSwitch);
