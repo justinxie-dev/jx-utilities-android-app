@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mButton;
     private Button gradesButton;
 
-    private Switch musSwitch;
     private MediaPlayer music;
 
     @Override
@@ -32,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
         convButton = (Button) findViewById(R.id.convertersButton);
         mButton = (Button) findViewById(R.id.mapButton);
         gradesButton = (Button) findViewById(R.id.gradeCalculatorButton);
-
-        // Preparing the music switch
-        musSwitch = (Switch) findViewById(R.id.musicSwitch);
-        musSwitch.setChecked(false);
 
         // Set Action Bar color
         // Source: https://www.geeksforgeeks.org/how-to-change-the-color-of-action-bar-in-an-android-app/
@@ -66,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // This code block is for music. Uncomment if music should be played
+    /*
+    // Preparing the music switch
+    private Switch musSwitch;
+    musSwitch = (Switch) findViewById(R.id.musicSwitch);
+    musSwitch.setChecked(false);
+
     // Music icons source link: https://www.i2symbol.com/symbols/music
     public void musicSwitchToggle(View view) {
         if (!musSwitch.isChecked()) {
@@ -86,4 +88,5 @@ public class MainActivity extends AppCompatActivity {
             // © 2007 NINTENDO
         }
     }
+     */
 }
