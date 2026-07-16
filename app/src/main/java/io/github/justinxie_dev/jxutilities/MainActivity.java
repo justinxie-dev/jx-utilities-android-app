@@ -18,14 +18,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Set Action Bar color
-        // Source: https://www.geeksforgeeks.org/how-to-change-the-color-of-action-bar-in-an-android-app/
-        ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#0F9D58"));
-        actionBar.setBackgroundDrawable(colorDrawable);
-
-        // Main Menu Background Image Source: https://depositphotos.com/stock-photos/kids-learning-cartoon.html
     }
 
     public void calculatorButtonClick (View view) {
