@@ -75,24 +75,6 @@ public class CalculatorMenuActivity extends AppCompatActivity {
         delEqButton = (ImageButton) findViewById(R.id.deleteEquationButton);
         calcOutputMenu = (TextView) findViewById(R.id.calculatorOutputMenu);
 
-        addOpButton.setBackgroundColor(Color.BLACK);
-        subOpButton.setBackgroundColor(Color.BLACK);
-        mulOpButton.setBackgroundColor(Color.BLACK);
-        divOpButton.setBackgroundColor(Color.BLACK);
-        eqOpButton.setBackgroundColor(Color.BLACK);
-        cal0Button.setBackgroundColor(Color.RED);
-        cal1Button.setBackgroundColor(Color.RED);
-        cal2Button.setBackgroundColor(Color.RED);
-        cal3Button.setBackgroundColor(Color.RED);
-        cal4Button.setBackgroundColor(Color.RED);
-        cal5Button.setBackgroundColor(Color.RED);
-        cal6Button.setBackgroundColor(Color.RED);
-        cal7Button.setBackgroundColor(Color.RED);
-        cal8Button.setBackgroundColor(Color.RED);
-        cal9Button.setBackgroundColor(Color.RED);
-        calcCheckYourAnsButton.setBackgroundColor(Color.GREEN);
-        calcGiveMeAnsButton.setBackgroundColor(Color.GREEN);
-
         // Set Action Bar color
         // Source: https://www.geeksforgeeks.org/how-to-change-the-color-of-action-bar-in-an-android-app/
         ActionBar actionBar = getSupportActionBar();
