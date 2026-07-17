@@ -75,12 +75,6 @@ public class CalculatorMenuActivity extends AppCompatActivity {
         delEqButton = (ImageButton) findViewById(R.id.deleteEquationButton);
         calcOutputMenu = (TextView) findViewById(R.id.calculatorOutputMenu);
 
-        // Set Action Bar color
-        // Source: https://www.geeksforgeeks.org/how-to-change-the-color-of-action-bar-in-an-android-app/
-        ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#800000"));
-        actionBar.setBackgroundDrawable(colorDrawable);
-
         // Create an instance of the database
         // Reference: https://developer.android.com/training/data-storage/room (Usage section)
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "jxutilities-database").fallbackToDestructiveMigration(true).build();
