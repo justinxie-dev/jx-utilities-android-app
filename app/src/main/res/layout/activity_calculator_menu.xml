@@ -57,7 +57,8 @@
                 android:onClick="equalOperatorButtonClick"
                 android:text="="
                 android:textColor="@color/white"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <TextView
                 android:id="@+id/calculatorOutputMenu"
@@ -82,7 +83,8 @@
                 android:onClick="addOperatorButtonClick"
                 android:text="+"
                 android:textColor="@color/white"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <LinearLayout
                 android:layout_width="13dp"
@@ -99,7 +101,8 @@
                 android:text="*"
                 android:textColor="@color/white"
                 android:textSize="34sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
         </LinearLayout>
 
@@ -117,7 +120,8 @@
                 android:text="-"
                 android:textColor="@color/white"
                 android:textSize="34sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -134,7 +138,8 @@
                     android:onClick="calc0ButtonClick"
                     android:text="0"
                     android:textColor="@color/black"
-                    android:textSize="34sp" />
+                    android:textSize="34sp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
             </LinearLayout>
 
             <Button
@@ -146,7 +151,8 @@
                 android:text="÷"
                 android:textColor="@color/white"
                 android:textSize="34sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
 
         <LinearLayout
@@ -163,7 +169,8 @@
                 android:onClick="calc7ButtonClick"
                 android:text="7"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calc8Button"
@@ -174,7 +181,8 @@
                 android:onClick="calc8ButtonClick"
                 android:text="8"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calc9Button"
@@ -185,7 +193,8 @@
                 android:onClick="calc9ButtonClick"
                 android:text="9"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
 
         <LinearLayout
@@ -202,7 +211,8 @@
                 android:onClick="calc4ButtonClick"
                 android:text="4"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calc5Button"
@@ -213,7 +223,8 @@
                 android:onClick="calc5ButtonClick"
                 android:text="5"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calc6Button"
@@ -224,7 +235,8 @@
                 android:onClick="calc6ButtonClick"
                 android:text="6"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
 
         <LinearLayout
@@ -241,7 +253,8 @@
                 android:onClick="calc1ButtonClick"
                 android:text="1"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calc2Button"
@@ -252,7 +265,8 @@
                 android:onClick="calc2ButtonClick"
                 android:text="2"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calc3Button"
@@ -263,7 +277,8 @@
                 android:onClick="calc3ButtonClick"
                 android:text="3"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="34sp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
 
         <LinearLayout
@@ -277,7 +292,8 @@
                 android:layout_height="38dp"
                 android:onClick="calcCheckYourAnswerButtonClick"
                 android:text="Check Your Answer!"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
                 android:id="@+id/calcGiveMeAnswerButton"
@@ -285,7 +301,8 @@
                 android:layout_height="38dp"
                 android:onClick="calcGiveMeAnswerButtonClick"
                 android:text="Give Me Answer!"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
 
     </LinearLayout>
