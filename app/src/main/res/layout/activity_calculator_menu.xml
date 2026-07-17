@@ -56,7 +56,7 @@
                 android:layout_weight="1"
                 android:onClick="equalOperatorButtonClick"
                 android:text="="
-                android:textColor="@color/white"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -82,7 +82,7 @@
                 android:layout_weight="1"
                 android:onClick="addOperatorButtonClick"
                 android:text="+"
-                android:textColor="@color/white"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -99,7 +99,7 @@
                 android:layout_weight="1"
                 android:onClick="multiplyOperatorButtonClick"
                 android:text="*"
-                android:textColor="@color/white"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 android:textStyle="bold"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
@@ -118,7 +118,7 @@
                 android:layout_weight="1"
                 android:onClick="subtractOperatorButtonClick"
                 android:text="-"
-                android:textColor="@color/white"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 android:textStyle="bold"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
@@ -137,7 +137,7 @@
                     android:backgroundTint="#673AB7"
                     android:onClick="calc0ButtonClick"
                     android:text="0"
-                    android:textColor="@color/black"
+                    android:textColor="#E0E0E0"
                     android:textSize="34sp"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
             </LinearLayout>
@@ -149,7 +149,7 @@
                 android:layout_weight="1"
                 android:onClick="divideOperatorButtonClick"
                 android:text="÷"
-                android:textColor="@color/white"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 android:textStyle="bold"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
@@ -168,7 +168,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc7ButtonClick"
                 android:text="7"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -180,7 +180,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc8ButtonClick"
                 android:text="8"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -192,7 +192,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc9ButtonClick"
                 android:text="9"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
@@ -210,7 +210,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc4ButtonClick"
                 android:text="4"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -222,7 +222,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc5ButtonClick"
                 android:text="5"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -234,7 +234,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc6ButtonClick"
                 android:text="6"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
@@ -252,7 +252,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc1ButtonClick"
                 android:text="1"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -264,7 +264,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc2ButtonClick"
                 android:text="2"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -276,7 +276,7 @@
                 android:backgroundTint="#673AB7"
                 android:onClick="calc3ButtonClick"
                 android:text="3"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 android:textSize="34sp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
@@ -292,7 +292,7 @@
                 android:layout_height="38dp"
                 android:onClick="calcCheckYourAnswerButtonClick"
                 android:text="Check Your Answer!"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <Button
@@ -301,7 +301,7 @@
                 android:layout_height="38dp"
                 android:onClick="calcGiveMeAnswerButtonClick"
                 android:text="Give Me Answer!"
-                android:textColor="@color/black"
+                android:textColor="#E0E0E0"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
         </LinearLayout>
 
